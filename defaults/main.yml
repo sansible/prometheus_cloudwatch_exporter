@@ -1,0 +1,15 @@
+---
+
+sansible_prometheus_cloudwatch_exporter:
+  checksum: sha256:3ac6c88e45815e84b400c70112f6d2b942d90ec08d4db19f23533e7667837571
+  config:
+    region: eu-west-1
+    metrics: ~
+  download_url: "http://search.maven.org/remotecontent?filepath=io/prometheus/cloudwatch/cloudwatch_exporter/0.4/cloudwatch_exporter-0.4-jar-with-dependencies.jar"
+  group: prometheus
+  opts: 9106 cloudwatch.yml
+  path:
+    install: /home/prometheus
+    log: /var/log/prometheus
+    pid: /var/run/prometheus
+  user: prometheus

@@ -1,0 +1,27 @@
+---
+
+- name: Deploy Prometheus CloudWatch Exporter defaults
+  become: yes
+  template:
+    dest: /etc/default/prometheus-cloudwatch-exporter
+    mode: 0644
+    src: prometheus_cloudwatch_exporter.default.j2
+  notify:
+    - restart prometheus cloudwatch exporter
+
+- name: Deploy config file
+  become: yes
+  become_user: "{{ sansible_prometheus_cloudwatch_exporter.user }}"
+  template:
+    dest: "{{ sansible_prometheus_cloudwatch_exporter.path.install }}/prometheus_cloudwatch_exporter/cloudwatch.yml"
+    group: "{{ sansible_prometheus_cloudwatch_exporter.group }}"
+    owner: "{{ sansible_prometheus_cloudwatch_exporter.user }}"
+    src: cloudwatch.yml.j2
+  notify:
+    - restart prometheus cloudwatch exporter
+
+- name: Prometheus CloudWatch Exporter service start
+  become: yes
+  service:
+    name: prometheus-cloudwatch-exporter
+    state: started
