@@ -1,0 +1,27 @@
+---
+
+- name: Test Prometheus CloudWatch Exporter role
+  hosts: all
+
+  pre_tasks:
+    - name: Update apt
+      become: yes
+      apt:
+        cache_valid_time: 1800
+        update_cache: yes
+      tags:
+        - build
+
+  roles:
+    - role: sansible.prometheus_cloudwatch_exporter
+
+  post_tasks:
+    - name: Get Prometheus CloudWatch Exporter service state
+      become: yes
+      service:
+        name: prometheus-cloudwatch-exporter
+        state: started
+      register: status_check
+      failed_when: status_check.changed
+      tags:
+        - assert

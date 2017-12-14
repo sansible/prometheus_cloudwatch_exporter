@@ -1,0 +1,55 @@
+---
+
+- name: Create Prometheus CloudWatch Exporter directories
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ sansible_prometheus_cloudwatch_exporter.user }}"
+    group: "{{ sansible_prometheus_cloudwatch_exporter.group }}"
+    mode: 0750
+  with_items:
+    - "{{ sansible_prometheus_cloudwatch_exporter.path.install }}"
+    - "{{ sansible_prometheus_cloudwatch_exporter.path.install }}/bin"
+    - "{{ sansible_prometheus_cloudwatch_exporter.path.install }}/prometheus_cloudwatch_exporter"
+    - "{{ sansible_prometheus_cloudwatch_exporter.path.log }}"
+    - "{{ sansible_prometheus_cloudwatch_exporter.path.pid }}"
+
+- name: Copy wrapper shell script
+  become: yes
+  copy:
+    src: prometheus_wrapper
+    dest: "{{ sansible_prometheus_cloudwatch_exporter.path.install }}/bin/prometheus_wrapper"
+    owner: "{{ sansible_prometheus_cloudwatch_exporter.user }}"
+    group: "{{ sansible_prometheus_cloudwatch_exporter.group }}"
+    mode: 0755
+
+- name: Download Prometheus CloudWatch Exporter JAR
+  become: yes
+  get_url:
+    url: "{{ sansible_prometheus_cloudwatch_exporter.download_url }}"
+    dest: "{{ sansible_prometheus_cloudwatch_exporter.path.install }}/prometheus_cloudwatch_exporter/{{ sansible_prometheus_cloudwatch_exporter.download_url.split('/')[-1] }}"
+    checksum: "{{ sansible_prometheus_cloudwatch_exporter.checksum }}"
+    owner: "{{ sansible_prometheus_cloudwatch_exporter.user }}"
+    group: "{{ sansible_prometheus_cloudwatch_exporter.group }}"
+    mode: 0755
+
+- name: Set Prometheus CloudWatch Exporter defaults
+  become: yes
+  template:
+    dest: /etc/default/prometheus-cloudwatch-exporter
+    mode: 0644
+    src: prometheus_cloudwatch_exporter.default.j2
+
+- name: Make Prometheus CloudWatch Exporter a service
+  become: yes
+  template:
+    dest: /etc/init.d/prometheus-cloudwatch-exporter
+    mode: 0775
+    src: prometheus_cloudwatch_exporter.sysvinit.j2
+
+- name: Enable Prometheus CloudWatch Exporter to start on boot
+  become: yes
+  service:
+    name: prometheus-cloudwatch-exporter
+    enabled: yes

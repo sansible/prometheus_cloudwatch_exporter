@@ -1,0 +1,7 @@
+---
+
+- name: restart prometheus cloudwatch exporter
+  become: yes
+  service:
+    name: prometheus-cloudwatch-exporter
+    state: restarted
