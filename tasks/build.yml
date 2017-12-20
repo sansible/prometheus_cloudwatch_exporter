@@ -18,8 +18,8 @@
 - name: Copy wrapper shell script
   become: yes
   copy:
-    src: prometheus_wrapper
-    dest: "{{ sansible_prometheus_cloudwatch_exporter.path.install }}/bin/prometheus_wrapper"
+    src: prometheus_java_wrapper
+    dest: "{{ sansible_prometheus_cloudwatch_exporter.path.install }}/bin/prometheus_java_wrapper"
     owner: "{{ sansible_prometheus_cloudwatch_exporter.user }}"
     group: "{{ sansible_prometheus_cloudwatch_exporter.group }}"
     mode: 0755

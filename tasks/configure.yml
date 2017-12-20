@@ -8,6 +8,7 @@
     src: prometheus_cloudwatch_exporter.default.j2
   notify:
     - restart prometheus cloudwatch exporter
+  when: ansible_user_id != "vagrant" and ansible_user_id != "travis"
 
 - name: Deploy config file
   become: yes
@@ -19,9 +20,11 @@
     src: cloudwatch.yml.j2
   notify:
     - restart prometheus cloudwatch exporter
+  when: ansible_user_id != "vagrant" and ansible_user_id != "travis"
 
 - name: Prometheus CloudWatch Exporter service start
   become: yes
   service:
     name: prometheus-cloudwatch-exporter
     state: started
+  when: ansible_user_id != "vagrant" and ansible_user_id != "travis"
