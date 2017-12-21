@@ -7,7 +7,7 @@ sansible_prometheus_cloudwatch_exporter:
     metrics: ~
   download_url: "http://search.maven.org/remotecontent?filepath=io/prometheus/cloudwatch/cloudwatch_exporter/0.4/cloudwatch_exporter-0.4-jar-with-dependencies.jar"
   group: prometheus
-  opts: 9106 cloudwatch.yml
+  opts: 9106 /home/prometheus/prometheus_cloudwatch_exporter/cloudwatch.yml
   path:
     install: /home/prometheus
     log: /var/log/prometheus
