@@ -48,7 +48,10 @@ do_start()
         #   0 if daemon has been started
         #   1 if daemon was already running
         #   2 if daemon could not be started
-        start-stop-daemon --start --background -C -c $USER --user $USER --pidfile $PIDFILE --exec {{ sansible_prometheus_cloudwatch_exporter.path.install }}/bin/prometheus_java_wrapper -- -c "$DAEMON" -a "$DAEMON_ARGS" -l "$LOG"
+        if [ ! -d `dirname $PIDFILE` ]; then
+                mkdir `dirname $PIDFILE`
+        fi
+        start-stop-daemon --start --background -C -c $USER --user $USER --make-pidfile --pidfile $PIDFILE --exec {{ sansible_prometheus_cloudwatch_exporter.path.install }}/bin/prometheus_java_wrapper -- -c "$DAEMON" -a "$DAEMON_ARGS" -l "$LOG"
         #
         # Exit code forced to be 0 otherwise service start tasks in Ansible fail on the first run.
         #
@@ -80,6 +83,7 @@ do_stop()
         start-stop-daemon --stop --quiet --oknodo --retry=0/30/KILL/5 --exec $DAEMON
         [ "$?" = 2 ] && return 2
         # Many daemons don't delete their pidfiles when they exit.
+        kill `cat $PIDFILE`
         rm -f $PIDFILE
         return "$RETVAL"
 }
